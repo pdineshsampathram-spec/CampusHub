@@ -1,247 +1,152 @@
-# 🎓 CampusHub – Campus Service Platform
+# 🚀 CampusHub 2.0 – Smart Campus Platform
 
-CampusHub is a **full-stack campus service management platform** designed to simplify everyday student services in a university environment.
-The application integrates multiple campus utilities into a **single modern dashboard**, allowing students to manage services such as food orders, library seat booking, certificates, exam alerts, and complaints.
-
-This project demonstrates a **real-world full-stack architecture** using a modern frontend, API backend, and cloud database deployment.
+CampusHub 2.0 is a **full-stack smart campus ecosystem** designed to simplify student life by combining campus services with intelligent features like **AI-powered StudySync, group collaboration, and smart assistants**.
 
 ---
 
-# 🌐 Live Application
+## 🌟 Key Features
 
-**Frontend (Vercel):**
-https://campus-service-app.vercel.app
+### 🧠 StudySync (Core Feature)
 
-**Backend API (Render):**
-https://campus-service-app.onrender.com
+* AI-based study group matching
+* Matches students based on:
 
----
+  * Subjects
+  * Availability
+  * Skill level
+* Generates:
 
-# 🧠 Project Goal
-
-Most university systems are fragmented across multiple portals.
-CampusHub aims to create **one unified digital campus platform** where students can:
-
-* Order food from campus canteens
-* Reserve library seats
-* Track certificate requests
-* Receive exam alerts
-* Submit complaints
-* View activity through a central dashboard
-
-The system focuses on **clean UI/UX, API-driven architecture, and real-time service management**.
+  * Study groups (2–4 members)
+  * Compatibility score
+  * Suggested meeting time
 
 ---
 
-# 🏗 System Architecture
+### 💬 Group Collaboration
 
-Frontend and backend are deployed separately following modern web architecture.
+* Real-time group chat
+* Context-aware AI assistant (CampusBot)
+* Persistent chat (stored in MongoDB)
+
+---
+
+### 🤖 AI Assistant (CampusBot)
+
+* Powered by Gemini AI
+* Helps with:
+
+  * Concept explanations (DSA, etc.)
+  * Study guidance
+  * Campus-related queries
+* Context-aware responses using chat history
+
+---
+
+### 📂 File Sharing System
+
+* Upload study materials (PDF, images, docs)
+* Files stored and linked to study groups
+* Accessible by all group members
+
+---
+
+### 📝 AI Quiz Generator
+
+* Generate quizzes from topics
+* Multiple-choice questions
+* Helps reinforce learning
+
+---
+
+### 📚 Campus Services
+
+* 🍔 Food ordering system
+* 📖 Library seat booking
+* 📄 Certificate requests
+* 🔔 Exam alerts
+* 🧾 Complaint system
+
+---
+
+## 🏗 Tech Stack
+
+### Frontend
+
+* React.js
+* Tailwind CSS
+* Vite
+
+### Backend
+
+* FastAPI
+* Python
+
+### Database
+
+* MongoDB Atlas
+
+### AI Integration
+
+* Google Gemini API (`google-generativeai`)
+
+---
+
+## ⚙️ System Architecture
 
 ```
-Frontend (React + Vite + Tailwind)
-        │
-        │  REST API
-        ▼
-Backend (FastAPI)
-        │
-        ▼
-Database (MongoDB Atlas)
-```
-
-### Deployment Stack
-
-| Layer             | Technology                  |
-| ----------------- | --------------------------- |
-| Frontend          | React + Vite + Tailwind CSS |
-| Backend           | FastAPI (Python)            |
-| Database          | MongoDB Atlas               |
-| Frontend Hosting  | Vercel                      |
-| Backend Hosting   | Render                      |
-| API Communication | REST                        |
-
----
-
-# ✨ Features
-
-## 📊 Dashboard
-
-A centralized dashboard showing real-time platform activity.
-
-Includes:
-
-* Total food orders
-* Active library bookings
-* Pending certificate requests
-* Open complaints
-* Weekly activity chart
-* Quick service actions
-
-Dashboard statistics are now **fully dynamic and connected to MongoDB**.
-
----
-
-## 🍔 Food Ordering System
-
-Students can browse campus canteens and order food directly through the platform.
-
-Features:
-
-* Dynamic food menu
-* Order placement
-* Database storage of orders
-* Dashboard integration
-
----
-
-## 📚 Library Seat Booking
-
-Allows students to reserve study seats in the campus library.
-
-Features:
-
-* Seat availability display
-* Seat booking
-* Seat cancellation
-* Booking data stored in MongoDB
-
----
-
-## 📜 Certificate Requests
-
-Students can request official documents such as:
-
-* Bonafide certificates
-* Academic certificates
-* Administrative documents
-
-Requests are stored and tracked in the system.
-
----
-
-## 📢 Exam Alerts
-
-Provides reminders and updates about upcoming exams.
-
-Students can view schedules and prepare accordingly.
-
----
-
-## ⚠ Complaint System
-
-Students can submit complaints related to campus services.
-
-Examples include:
-
-* Infrastructure issues
-* Service delays
-* Administrative concerns
-
----
-
-## 🤖 AI Assistant (Experimental)
-
-An integrated chatbot assistant designed to help students interact with the platform.
-
-Capabilities include:
-
-* Checking service information
-* Providing guidance
-* Assisting with platform usage
-
-This feature is still under development.
-
----
-
-# 🔐 Authentication
-
-The platform includes user authentication with:
-
-* User registration
-* Login system
-* Secure access to personal dashboard
-* Token-based authentication
-
----
-
-# 🗄 Database Design
-
-The MongoDB database includes collections such as:
-
-```
-users
-food_orders
-library_bookings
-certificates
-complaints
-canteens
-```
-
-Each module stores its own data while the dashboard aggregates statistics dynamically.
-
----
-
-# 🚀 Running the Project Locally
-
-### Clone the repository
-
-```
-git clone https://github.com/pdineshsampathram-spec/campus-service-app.git
-cd campus-service-app
+Frontend (React)
+        ↓
+FastAPI Backend
+        ↓
+MongoDB Atlas
+        ↓
+AI (Gemini API)
 ```
 
 ---
 
-### Install backend dependencies
+## 🚀 Getting Started
 
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/your-username/campushub.git
+cd campushub
 ```
+
+---
+
+### 2️⃣ Backend Setup
+
+```bash
 cd backend
 pip install -r requirements.txt
 ```
 
----
-
-### Configure environment variables
-
-Create a `.env` file:
+Create `.env` file:
 
 ```
-MONGODB_URL=your_mongodb_connection_string
-DATABASE_NAME=campus_service_db
-SECRET_KEY=your_secret_key
+MONGO_URI=your_mongodb_uri
+GEMINI_API_KEY=your_api_key
 ```
 
----
+Run backend:
 
-### Run backend
-
-```
+```bash
 uvicorn main:app --reload
 ```
 
-Backend runs on:
-
-```
-http://localhost:8000
-```
-
 ---
 
-### Install frontend dependencies
+### 3️⃣ Frontend Setup
 
-```
+```bash
 cd frontend
 npm install
-```
-
----
-
-### Run frontend
-
-```
 npm run dev
 ```
 
-Frontend runs on:
+App runs on:
 
 ```
 http://localhost:5173
@@ -249,54 +154,61 @@ http://localhost:5173
 
 ---
 
-# ⚠ Known Issues (Honest Status)
+## 📂 Project Structure
 
-This project is still under development. Some issues remain:
-
-### Library Booking Error
-
-Occasional errors occur while booking seats in the library module.
-
-### Render Cold Start Delay
-
-The backend is hosted on the **Render free tier**, which can take **30–60 seconds to start after inactivity**.
-
-### AI Assistant Stability
-
-The AI assistant feature is still experimental and may not always respond correctly.
-
----
-
-# 🧪 Project Status
-
-This project is currently an **active development project and portfolio demonstration**.
-
-Future improvements include:
-
-* Fixing remaining booking issues
-* Improving backend query efficiency
-* Enhancing AI assistant capabilities
-* Adding admin controls
-* Improving UI responsiveness
+```
+campushub/
+│
+├── backend/
+│   ├── routes/
+│   ├── models/
+│   ├── services/
+│   └── main.py
+│
+├── frontend/
+│   ├── components/
+│   ├── pages/
+│   └── App.jsx
+│
+└── README.md
+```
 
 ---
 
-# 👨‍💻 Author
+## 🔥 Unique Selling Points
 
-**Dinesh Sampathram**
-
-GitHub:
-https://github.com/pdineshsampathram-spec
-
----
-
-# 📄 License
-
-This project is intended for **educational and portfolio purposes**.
+* AI-driven study group matching
+* Chat + AI + file sharing in one platform
+* Smart campus services integration
+* Clean modern UI (dark theme + neon style)
 
 ---
 
-⭐ If you found this project useful, consider giving the repository a star.
+## 🧪 Future Improvements
 
+* WebSocket real-time chat
+* AI-based study recommendations
+* Notification system
+* Mobile app version
 
-updated
+---
+
+## 🎯 Hackathon Value
+
+This project focuses on:
+
+* Solving real student problems
+* Combining AI with practical use-cases
+* Delivering a complete, scalable system
+
+---
+
+## 👨‍💻 Author
+
+**Dinesh**
+
+---
+
+## 📜 License
+
+This project is for educational and hackathon purposes.
