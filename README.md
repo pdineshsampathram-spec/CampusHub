@@ -1,64 +1,74 @@
 # 🚀 CampusHub 2.0 – Smart Campus Platform
 
-CampusHub 2.0 is a **full-stack smart campus ecosystem** designed to simplify student life by combining campus services with intelligent features like **AI-powered StudySync, group collaboration, and smart assistants**.
+🌐 **Live Demo:** https://campus-hub-zeta-five.vercel.app
+⚙️ **Backend API:** https://campushub-4h8d.onrender.com
 
 ---
 
-## 🌟 Key Features
+## 📌 Overview
 
-### 🧠 StudySync (Core Feature)
+**CampusHub 2.0** is a full-stack smart campus platform that combines essential student services with **AI-powered collaboration tools**.
 
-* AI-based study group matching
-* Matches students based on:
+It transforms traditional campus apps into an **intelligent ecosystem**, where students can:
+
+* Access services (food, library, certificates)
+* Find study partners using AI
+* Collaborate in real-time with chat, files, and AI assistance
+
+---
+
+## 🌟 Core Features
+
+### 🧠 StudySync (AI Study Group Matching)
+
+* Automatically forms study groups (2–4 students)
+* Based on:
 
   * Subjects
   * Availability
   * Skill level
-* Generates:
+* Outputs:
 
-  * Study groups (2–4 members)
   * Compatibility score
   * Suggested meeting time
 
 ---
 
-### 💬 Group Collaboration
+### 💬 Group Collaboration System
 
-* Real-time group chat
+* Dedicated study group page
+* Real-time chat (MongoDB-backed)
 * Context-aware AI assistant (CampusBot)
-* Persistent chat (stored in MongoDB)
+* Task management system
 
 ---
 
-### 🤖 AI Assistant (CampusBot)
+### 🤖 CampusBot AI (Gemini Powered)
 
-* Powered by Gemini AI
-* Helps with:
-
-  * Concept explanations (DSA, etc.)
-  * Study guidance
-  * Campus-related queries
-* Context-aware responses using chat history
+* Explains concepts (DSA, etc.)
+* Answers study queries
+* Uses chat context for smarter responses
+* Integrated inside group chat
 
 ---
 
-### 📂 File Sharing System
+### 📂 File Sharing (Study Resources)
 
-* Upload study materials (PDF, images, docs)
-* Files stored and linked to study groups
-* Accessible by all group members
+* Upload notes (PDF, images, docs)
+* Shared within study groups
+* Persistent storage with MongoDB
 
 ---
 
 ### 📝 AI Quiz Generator
 
-* Generate quizzes from topics
-* Multiple-choice questions
+* Generates quizzes from topics
+* Multiple-choice format
 * Helps reinforce learning
 
 ---
 
-### 📚 Campus Services
+### 🏫 Campus Services
 
 * 🍔 Food ordering system
 * 📖 Library seat booking
@@ -68,18 +78,18 @@ CampusHub 2.0 is a **full-stack smart campus ecosystem** designed to simplify st
 
 ---
 
-## 🏗 Tech Stack
+## 🏗️ Tech Stack
 
 ### Frontend
 
-* React.js
+* React.js (Vite)
 * Tailwind CSS
-* Vite
+* Axios
 
 ### Backend
 
-* FastAPI
-* Python
+* FastAPI (Python)
+* REST APIs
 
 ### Database
 
@@ -91,23 +101,23 @@ CampusHub 2.0 is a **full-stack smart campus ecosystem** designed to simplify st
 
 ---
 
-## ⚙️ System Architecture
+## ⚙️ Architecture
 
-```
-Frontend (React)
+```text
+React (Frontend - Vercel)
         ↓
-FastAPI Backend
+FastAPI (Backend - Render)
         ↓
 MongoDB Atlas
         ↓
-AI (Gemini API)
+Gemini AI (Google)
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Local Setup)
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/your-username/campushub.git
@@ -125,7 +135,7 @@ pip install -r requirements.txt
 
 Create `.env` file:
 
-```
+```env
 MONGO_URI=your_mongodb_uri
 GEMINI_API_KEY=your_api_key
 ```
@@ -146,7 +156,7 @@ npm install
 npm run dev
 ```
 
-App runs on:
+App runs at:
 
 ```
 http://localhost:5173
@@ -156,13 +166,13 @@ http://localhost:5173
 
 ## 📂 Project Structure
 
-```
+```text
 campushub/
 │
 ├── backend/
 │   ├── routes/
-│   ├── models/
 │   ├── services/
+│   ├── models/
 │   └── main.py
 │
 ├── frontend/
@@ -175,31 +185,41 @@ campushub/
 
 ---
 
-## 🔥 Unique Selling Points
+## 🔥 Highlights
 
 * AI-driven study group matching
-* Chat + AI + file sharing in one platform
-* Smart campus services integration
-* Clean modern UI (dark theme + neon style)
+* Integrated chat + AI + file sharing
+* Full-stack scalable architecture
+* Modern dark UI with premium feel
+* Real-world problem solving
 
 ---
 
-## 🧪 Future Improvements
+## ⚠️ Known Challenges (Handled)
+
+* Gemini API instability → fixed with retry + fallback
+* MongoDB sync issues → resolved with proper API flow
+* UI clutter → improved with modular layout
+
+---
+
+## 🚧 Future Improvements
 
 * WebSocket real-time chat
+* Notifications system
 * AI-based study recommendations
-* Notification system
 * Mobile app version
 
 ---
 
-## 🎯 Hackathon Value
+## 🏆 Hackathon Value
 
-This project focuses on:
+CampusHub 2.0 demonstrates:
 
-* Solving real student problems
-* Combining AI with practical use-cases
-* Delivering a complete, scalable system
+* Real-world impact on student collaboration
+* Practical use of AI in education
+* Clean architecture and scalability
+* Strong UI/UX with interactive features
 
 ---
 
@@ -211,4 +231,4 @@ This project focuses on:
 
 ## 📜 License
 
-This project is for educational and hackathon purposes.
+This project is developed for educational and hackathon purposes.
