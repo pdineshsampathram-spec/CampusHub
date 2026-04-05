@@ -1,6 +1,7 @@
 # 🚀 CampusHub 2.0 – Smart Campus Platform
 
 🌐 **Live Demo:** https://campus-hub-zeta-five.vercel.app
+
 ⚙️ **Backend API:** https://campushub-4h8d.onrender.com
 
 ---
