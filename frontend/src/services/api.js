@@ -1,0 +1,215 @@
+import axios from 'axios';
+
+// Hardcode localhost fallback for seamless local execution if Vite .env fails to inject on hot reloads
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
+const api = axios.create({
+  baseURL: API_BASE,
+  headers: { 
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  timeout: 30000, // 30s timeout as requested for production stability
+});
+
+// ... (interceptors omitted for brevity in replace_file_content if possible, but I'll replace the block)
+// I will keep the interceptors but update the timeout and healthService.
+
+
+// Attach JWT token to every request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  
+  // Track retries
+  config.metadata = config.metadata || { retryCount: 0 };
+  
+  // Track request start for cold-start detection
+  config.wakingTimer = setTimeout(() => {
+    window.dispatchEvent(new CustomEvent('server-waking', { detail: true }));
+  }, 1500);
+  
+  return config;
+});
+
+// Standardize response unwrapping
+api.interceptors.response.use(
+  (response) => {
+    if (response.config.wakingTimer) {
+      clearTimeout(response.config.wakingTimer);
+      window.dispatchEvent(new CustomEvent('server-waking', { detail: false }));
+    }
+    
+    // Support both wrapped {success, data, message} and direct data from backend
+    const resData = response.data;
+    if (resData && typeof resData === 'object' && ('success' in resData)) {
+      if (resData.success) {
+        return { success: true, data: resData.data, status: response.status };
+      }
+      return Promise.reject({
+        success: false,
+        message: resData.message || 'Operation failed',
+        status: response.status
+      });
+    }
+    
+    // Direct response fallback
+    return { success: true, data: resData, status: response.status };
+  },
+  async (error) => {
+    const { config, response } = error;
+    
+    if (config?.wakingTimer) {
+      clearTimeout(config.wakingTimer);
+      window.dispatchEvent(new CustomEvent('server-waking', { detail: false }));
+    }
+
+    // RETRY LOGIC for Cold Starts (503 Service Unavailable, 504 Gateway Timeout, or Network Error)
+    const isRetryable = !response || response.status === 503 || response.status === 504;
+    
+    if (isRetryable && config && config.metadata.retryCount < 3) {
+      config.metadata.retryCount += 1;
+      const delay = 2000; // 2s delay as requested
+      
+      console.log(`⚠️ Server waking up. Retrying in ${delay}ms... (Attempt ${config.metadata.retryCount})`);
+      window.dispatchEvent(new CustomEvent('server-waking', { detail: true }));
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return api(config);
+    }
+
+    if (axios.isCancel(error)) {
+      return Promise.reject(error);
+    }
+
+    if (response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('campus_user');
+      if (!['/login', '/register'].includes(window.location.pathname)) {
+        window.location.href = '/login';
+      }
+    }
+
+    const backendError = response?.data;
+    let errorMsg = backendError?.message || backendError?.detail || error.message || 'An unexpected error occurred';
+    
+    // Step 6: Friendly error message
+    if (isRetryable) {
+      errorMsg = "Server starting. Please try again in a moment.";
+    }
+    
+    return Promise.reject({
+      success: false,
+      message: errorMsg,
+      status: response?.status
+    });
+  }
+);
+
+// Health Check / Ping
+export const healthService = {
+  ping: (signal) => api.get('/', { signal }),
+  // Step 1: Backend Ready Check
+  waitForBackend: async () => {
+    let retries = 10;
+    while (retries > 0) {
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        if (res.ok) return true;
+      } catch (e) {}
+      
+      await new Promise(r => setTimeout(r, 3000));
+      retries--;
+    }
+    throw new Error("Backend not ready");
+  },
+  wakeServer: async () => {
+    try {
+      await api.get('/health', { timeout: 10000 });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+};
+
+// Auth
+export const authService = {
+  register: (data, signal) => api.post('/api/auth/register', data, { signal }),
+  login: (data, signal) => api.post('/api/auth/login', data, { signal }),
+  getMe: (signal) => api.get('/api/auth/me', { signal }),
+  updateProfile: (data, signal) => api.patch('/api/auth/me', data, { signal }),
+};
+
+// Orders
+export const orderService = {
+  createOrder: (data, signal) => api.post('/api/orders/', data, { signal }),
+  getMyOrders: (signal) => api.get('/api/orders/my-orders', { signal }),
+  getOrder: (id, signal) => api.get(`/api/orders/${id}`, { signal }),
+};
+
+// Food
+export const foodService = {
+  getCanteens: (signal) => api.get('/api/food/canteens', { signal }),
+  getItem: (id, signal) => api.get(`/api/food/items/${id}`, { signal }),
+};
+
+// Library
+export const libraryService = {
+  bookSeat: (data, signal) => api.post('/api/library/book-seat', data, { signal }),
+  getMyBookings: (signal) => api.get('/api/library/my-bookings', { signal }),
+  getTodaySeats: (signal) => api.get('/api/library/seats', { signal }),
+  getSeatsStatus: (date, floor = 1, signal) => api.get(`/api/library/seats/${date}?floor=${floor}`, { signal }),
+  cancelBooking: (id, signal) => api.delete(`/api/library/cancel/${id}`, { signal }),
+  unbookSeat: (seatId) => api.delete(`/api/library/unbook-seat/${seatId}`),
+};
+
+// Certificates
+export const certificateService = {
+  requestCertificate: (data, signal) => api.post('/api/certificates/request', data, { signal }),
+  getMyRequests: (signal) => api.get('/api/certificates/my-requests', { signal }),
+};
+
+// Exams
+export const examService = {
+  getExams: (signal) => api.get('/api/exams/', { signal }),
+  getUpcoming: (signal) => api.get('/api/exams/upcoming', { signal }),
+};
+
+// Complaints
+export const complaintService = {
+  createComplaint: (data, signal) => api.post('/api/complaints/', data, { signal }),
+  getMyComplaints: (signal) => api.get('/api/complaints/my-complaints', { signal }),
+  updateStatus: (id, status, signal) => api.patch(`/api/complaints/${id}/status?status=${status}`, { signal }),
+};
+
+// Dashboard
+export const dashboardService = {
+  getStats: (signal) => api.get('/api/dashboard/stats', { signal }),
+  getChartData: (signal) => api.get('/api/dashboard/chart-data', { signal }),
+};
+
+// StudySync
+export const studySyncService = {
+  findGroup: (data, signal) => api.post('/api/study-sync/', data, { signal }),
+  getMyGroups: (signal) => api.get('/api/study-sync/groups', { signal }),
+  getMyPreference: (signal) => api.get('/api/study-sync/preference', { signal }),
+  getGroupChat: (groupId, signal) => api.get(`/api/study-sync/chat/${groupId}`, { signal }),
+  sendMessage: (groupId, text, signal) => api.post(`/api/study-sync/chat/send`, { group_id: groupId, message: text }, { signal }),
+  getTasks: (groupId, signal) => api.get(`/api/study-sync/tasks/${groupId}`, { signal }),
+  addTask: (groupId, task, signal) => api.post(`/api/study-sync/tasks/add`, { group_id: groupId, task }, { signal }),
+  updateTask: (taskId, completed, signal) => api.patch(`/api/study-sync/tasks/${taskId}`, { completed }, { signal }),
+  getAiHelp: (groupId, query, signal) => api.post(`/api/study-sync/ai-help`, { group_id: groupId, query }, { signal }),
+  bookGroupSeat: (groupId, signal) => api.post(`/api/study-sync/groups/${groupId}/book-seat`, {}, { signal }),
+  uploadGroupFile: (data, signal) => api.post('/api/study-sync/upload', data, { signal }),
+  getGroupFiles: (groupId, signal) => api.get(`/api/study-sync/files/${groupId}`, { signal }),
+  analyzeFile: (groupId, fileId, action, signal) => api.post('/api/study-sync/analyze', { group_id: groupId, file_id: fileId, action }, { signal }),
+  generateQuiz: (groupId, signal) => api.get(`/api/study-sync/quiz/${groupId}`, { signal }),
+  generateStandaloneQuiz: (data, signal) => api.post(`/api/study-sync/quiz/generate`, data, { signal }),
+  getStats: (signal) => api.get('/api/study-sync/stats', { signal }),
+  getLeaderboard: (signal) => api.get('/api/study-sync/leaderboard', { signal }),
+};
+
+export default api;
